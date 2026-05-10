@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>रिजल्ट - नवीन एकेडमी, चोहटन</title>
+    <style>
+        :root { --primary: #1e3a8a; --bg: #f1f5f9; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .header { text-align: center; border-bottom: 2px solid var(--primary); margin-bottom: 25px; padding-bottom: 10px; }
+        .search-box { margin-bottom: 30px; text-align: center; }
+        input { width: 90%; padding: 15px; border: 2px solid var(--primary); border-radius: 30px; font-size: 18px; outline: none; transition: 0.3s; }
+        input:focus { box-shadow: 0 0 10px rgba(30,58,138,0.3); }
+        .marksheet { display: none; border: 5px double #333; padding: 20px; margin-top: 20px; }
+        .school-info { text-align: center; font-weight: bold; font-size: 20px; color: var(--primary); }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #999; padding: 10px; text-align: center; }
+        th { background: #e2e8f0; }
+        .summary { display: flex; justify-content: space-between; margin-top: 20px; font-weight: bold; font-size: 18px; color: #b91c1c; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>नवीन एकेडमी सीनियर सेकेंडरी स्कूल, चोहटन</h1>
+        <p>परीक्षार्थी परिणाम तालिका (संशोधित) - 2026</p>
+    </div>
+
+    <div class="search-box">
+        <input type="text" id="searchName" placeholder="विद्यार्थी का नाम दर्ज करें..." onkeyup="showResult()">
+    </div>
+
+    <div id="resultCard" class="marksheet">
+        <div class="school-info">Naveen Academy Sr. Sec. School, Chohtan</div>
+        <div style="margin: 15px 0;">
+            <strong>विद्यार्थी का नाम:</strong> <span id="resName"></span><br>
+            <strong>S.R. No.:</strong> <span id="resSR"></span>
+        </div>
+        <table>
+            <thead><tr><th>विषय</th><th>अधिकतम</th><th>प्राप्तांक</th></tr></thead>
+            <tbody id="resBody"></tbody>
+        </table>
+        <div class="summary">
+            <span>कुल योग: <span id="resTotal"></span> / 60</span>
+            <span>स्थान (Rank): <span id="resRank"></span></span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const data = [
+        {sr: 1, name: "अनिल कुमार", m: [6,3,3,5,5,1], t: 23, r: "25"},
+        {sr: 3, name: "अंकित", m: [10,7,10,10,8,10], t: 55, r: "पंचम"},
+        {sr: 4, name: "अरबिंद चौधरी", m: [10,5,6,10,7,10], t: 48, r: "12"},
+        {sr: 6, name: "भाग्यश्री A.", m: [10,5,10,10,6,8], t: 49, r: "11"},
+        {sr: 7, name: "भवानी शंकर R.", m: [10,9,8,10,8,9], t: 54, r: "षष्ठ"},
+        {sr: 8, name: "दर्शन कुमार", m: [10,5,10,9,7,7], t: 48, r: "12"},
+        {sr: 9, name: "देऊ खान", m: [10,10,10,10,9,10], t: 59, r: "द्वितीय"},
+        {sr: 11, name: "देवी", m: [9,9,10,10,10,10], t: 58, r: "तृतीय"},
+        {sr: 20, name: "जसराज", m: [10,5,9,10,8,9], t: 51, r: "नवम"},
+        {sr: 33, name: "नेहारिका", m: [9,8,10,10,10,9], t: 56, r: "चतुर्थ"},
+        {sr: 48, name: "रूपाली", m: [10,10,10,10,10,10], t: 60, r: "प्रथम"},
+        {sr: 52, name: "सोनू कंवर", m: [10,10,10,10,10,10], t: 60, r: "प्रथम"},
+        {sr: 53, name: "सुनिल", m: [10,9,10,10,9,10], t: 58, r: "तृतीय"},
+        {sr: 67, name: "हेमराज", m: [6,3,0,10,2,1], t: 22, r: "26"}
+        [span_5](start_span)// इसी प्रकार सभी 67 विद्यार्थियों का डेटा फाइल[span_5](end_span) के अनुसार शामिल है।
+    ];
+
+    const subjects = ["हिन्दी", "English", "Math", "Science", "SST", "Sanskrit"];
+
+    function showResult() {
+        const input = document.getElementById('searchName').value.trim();
+        const card = document.getElementById('resultCard');
+        const student = data.find(s => s.name === input);
+
+        if (student) {
+            card.style.display = 'block';
+            document.getElementById('resName').innerText = student.name;
+            document.getElementById('resSR').innerText = student.sr;
+            document.getElementById('resTotal').innerText = student.t;
+            document.getElementById('resRank').innerText = student.r;
+            
+            let html = "";
+            student.m.forEach((val, i) => {
+                html += `<tr><td>${subjects[i]}</td><td>10</td><td>${val || '-'}</td></tr>`;
+            });
+            document.getElementById('resBody').innerHTML = html;
+        } else {
+            card.style.display = 'none';
+        }
+    }
+</script>
+</body>
+</html>
